@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import Header from './components/header/Header';
+import Main from './components/main/Main';
+import { data } from './data';
 
-function App() {
+const App = () => {
+  const [cart, setCart] = useState([]);
+  const [product] = useState(data[0]);
+  const [quantity, setQuantity] = useState(1);
+
+  const handleAddCart = (prod, qty) => {
+    let newCartItems = cart.some((item) => item.id === prod.id);
+    if (!newCartItems) setCart([...cart, prod]);
+    else setQuantity(quantity + qty);
+  };
+
+  // After checkout or on removal from cart
+  const handleRemoveCart = (id) => {
+    setCart(cart.filter((item) => item.id !== id));
+  };
+
+  const handleCheckout = () => {
+    alert('Ordered Sucessfully!');
+    setCart([]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Header
+        cart={cart}
+        quantity={quantity}
+        onRemoveCart={(id) => handleRemoveCart(id)}
+        onOrder={handleCheckout}
+      />
+      <Main
+        product={product}
+        onAddCart={(prod, qty) => handleAddCart(prod, qty)}
+      />
     </div>
   );
-}
+};
 
 export default App;
